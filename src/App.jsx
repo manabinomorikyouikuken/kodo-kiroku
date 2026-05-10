@@ -155,6 +155,24 @@ function HomeView({ children, onAdd, onDelete, onSelect }) {
   )
 }
 
+// ── CSV出力 ─────────────────────────────────────────
+function exportCSV(child, records) {
+  const header = '日時,場所,行動,直前の出来事,対応・結果,メモ'
+  const rows = records.map(r => [
+    new Date(r.createdAt).toLocaleString('ja-JP'),
+    r.place, r.behavior, r.antecedent || '', r.consequence || '',
+    (r.note || '').replace(/,/g, '、').replace(/\n/g, ' ')
+  ].map(v => `"${v}"`).join(','))
+  const bom = '﻿'
+  const blob = new Blob([bom + [header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${child.name}_行動記録_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '')}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 // ── 記録一覧 ────────────────────────────────────────
 function DetailView({ child, records, onRecord, onDelete }) {
   return (
@@ -163,6 +181,13 @@ function DetailView({ child, records, onRecord, onDelete }) {
         className="w-full py-4 rounded-xl bg-green-600 text-white font-bold text-lg shadow-md active:bg-green-700">
         ＋ 今の行動を記録する
       </button>
+
+      {records.length > 0 && (
+        <button onClick={() => exportCSV(child, records)}
+          className="w-full py-2 rounded-xl border border-green-400 text-green-700 text-sm font-bold hover:bg-green-50">
+          📥 CSVで書き出す（Excel・連絡帳用）
+        </button>
+      )}
 
       {records.length === 0 && (
         <div className="bg-white rounded-xl border border-slate-200 p-6 text-center text-slate-400 text-sm">
