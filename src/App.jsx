@@ -71,6 +71,34 @@ export default function App() {
 }
 
 // ── ホーム（子ども一覧） ─────────────────────────────
+function PrivacyNotice() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-xl overflow-hidden text-sm">
+      <button onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 text-amber-800 font-bold">
+        <span>⚠️ 個人情報の取り扱いに関する注意事項</span>
+        <span>{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 space-y-2 text-amber-900 text-xs leading-relaxed border-t border-amber-200">
+          <p className="font-bold mt-2">このアプリを使用する前に必ずお読みください。</p>
+          <ul className="space-y-2 list-none">
+            <li>📱 <strong>端末内保存：</strong>記録データはこの端末の中だけに保存されます。外部サーバーへの送信は一切ありません。</li>
+            <li>🔒 <strong>端末の管理：</strong>必ず端末にパスコード・生体認証を設定し、他者が操作できない状態にしてください。</li>
+            <li>👤 <strong>実名を避ける：</strong>子どもの名前はイニシャルや番号（例：A児・1番）で登録することを推奨します。</li>
+            <li>🏫 <strong>学校のルールに従う：</strong>学校・施設の個人情報管理規定および情報セキュリティポリシーに従って使用してください。</li>
+            <li>🗑️ <strong>端末の廃棄・譲渡：</strong>端末を廃棄・譲渡する際は、必ずすべての記録を削除してください。</li>
+            <li>📋 <strong>記録の目的：</strong>このアプリで記録した情報は支援目的以外に使用しないでください。</li>
+            <li>⚖️ <strong>法令遵守：</strong>個人情報保護法および学校教育に関連する法令・ガイドラインを遵守して使用してください。</li>
+          </ul>
+          <p className="text-amber-700 mt-2">本アプリは支援の補助ツールであり、記録内容の管理責任は利用者にあります。</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function HomeView({ children, onAdd, onDelete, onSelect }) {
   const [name, setName] = useState('')
   const [grade, setGrade] = useState('')
@@ -84,6 +112,7 @@ function HomeView({ children, onAdd, onDelete, onSelect }) {
 
   return (
     <div className="space-y-4">
+      <PrivacyNotice />
       <p className="text-sm text-slate-500">子どもを選んで記録を始めましょう</p>
 
       {children.length === 0 && (
